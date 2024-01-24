@@ -4,6 +4,7 @@ package com.chatbot.controllers;
 import com.chatbot.requests.ChatGptRequest;
 import com.chatbot.responses.ChatGptResponse;
 import com.chatbot.services.ChatService;
+import com.chatbot.services.IChatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController {
 
     @Autowired
-    private ChatService chatService;
+    private IChatService chatService;
 
     @PostMapping("")
-    public ChatGptResponse chat (@Valid @RequestParam(required = false) Long id,
-                                 @RequestBody ChatGptRequest request) {
+    public ChatGptResponse chat(
+            @Valid @RequestParam(defaultValue = "0") Long id,
+            @RequestBody ChatGptRequest request) {
         return chatService.processChat(request, id);
     }
-
 
 }

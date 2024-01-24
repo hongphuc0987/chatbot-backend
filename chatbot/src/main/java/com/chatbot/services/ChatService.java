@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ChatService {
+public class ChatService implements IChatService{
 
     @Autowired
     private RestTemplate template;
@@ -35,32 +35,33 @@ public class ChatService {
     @Value(("${openai.api.url}"))
     private String apiURL;
 
+    @Override
     public ChatGptResponse processChat(ChatGptRequest request, long conversationId){
 
-        ChatGptResponse chatGptResponse = template.postForObject(apiURL, request, ChatGptResponse.class);
-        ConversationEntity conversation = conversationRepository.findById(conversationId);
+        List<MessageRequest> allMessages = new ArrayList<>();
+
+        ConversationEntity conversation ;
         if(conversationId==0){
             conversation = new ConversationEntity();
             conversation.setIsActive(true);
             conversation.setCreatedAt(LocalDateTime.now());
 
+        }else{
+            conversation = conversationRepository.findById(conversationId);
+            List<MessageEntity> oldMessages = messageRepository.findByConversationId(conversation);
+            for (MessageEntity oldMessage : oldMessages) {
+                MessageRequest messageRequest = new MessageRequest();
+                messageRequest.setRole(oldMessage.getRole());
+                messageRequest.setContent(oldMessage.getContent());
+                allMessages.add(messageRequest);
+            }
+
+            allMessages.addAll(request.getMessages());
+            request.setMessages(allMessages);
         }
+        conversationRepository.save(conversation);
 
-        List<MessageEntity> oldMessages = messageRepository.findByConversationId(conversation);
-
-        List<MessageRequest> allMessages = new ArrayList<>();
-        for (MessageEntity oldMessage : oldMessages) {
-            MessageRequest messageRequest = new MessageRequest();
-            messageRequest.setRole(oldMessage.getRole());
-            messageRequest.setContent(oldMessage.getContent());
-            allMessages.add(messageRequest);
-        }
-
-        allMessages.addAll(request.getMessages());
-
-        request.setMessages(allMessages);
-
-
+        ChatGptResponse chatGptResponse = template.postForObject(apiURL, request, ChatGptResponse.class);
         List<Choice> choices = chatGptResponse.getChoices();
         List<MessageEntity> messages = new ArrayList<>();
         String latestUserQuestion = findLatestUserQuestion(request);
@@ -87,29 +88,26 @@ public class ChatService {
 
             messages.add(messageSystem);
         }
+        messageRepository.saveAll(messages);
 
         conversation.setMessages(messages);
-        conversationRepository.save(conversation);
 
         return chatGptResponse;
 
 
     }
-
-
-
     private String findLatestUserQuestion(ChatGptRequest request) {
         List<MessageRequest> messages = request.getMessages();
 
-        for (int i = messages.size() - 1; i >= 0; i--) {
-            MessageRequest message = messages.get(i);
-            if ("user".equals(message.getRole())) {
-                return message.getContent();
+        if (!messages.isEmpty()) {
+            MessageRequest latestMessage = messages.get(messages.size() - 1);
+            if ("user".equals(latestMessage.getRole())) {
+                return latestMessage.getContent();
             }
         }
-
-        return null; // Không tìm thấy câu hỏi từ người dùng
+        return null;
     }
+
 
 
 }
