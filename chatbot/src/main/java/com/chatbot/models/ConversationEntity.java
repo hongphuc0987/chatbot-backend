@@ -36,6 +36,4 @@ public class ConversationEntity {
     @OneToMany(mappedBy = "conversationId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<MessageEntity> messages;
-
-
 }

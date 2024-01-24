@@ -62,7 +62,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return an empty list since we are not managing roles
         return Collections.emptyList();
     }
 }

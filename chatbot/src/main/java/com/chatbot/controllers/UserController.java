@@ -2,25 +2,27 @@ package com.chatbot.controllers;
 
 import com.chatbot.components.apis.CoreApiResponse;
 import com.chatbot.components.configurations.AppProperties;
+import com.chatbot.requests.ForgotPasswordRequest;
 import com.chatbot.requests.SignInRequest;
 import com.chatbot.requests.SignUpRequest;
 import com.chatbot.responses.SignInResponse;
-import com.chatbot.services.UserService;
+import com.chatbot.services.IUserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@AllArgsConstructor
 @RestController
 @RequestMapping("${app.api.version.v1}/user")
 public class UserController {
-    private final AppProperties appProperties;
+    @Autowired
+    private  AppProperties appProperties;
 
-    private final UserService userService;
+    @Autowired
+    private  IUserService userService;
 
     @GetMapping("/verify")
     public CoreApiResponse<?> verify(
@@ -49,6 +51,23 @@ public class UserController {
         response.addCookie(cookie);
 
         return CoreApiResponse.success(signIn);
+    }
+    @GetMapping("/forgotpassword")
+    public CoreApiResponse<?> forgotPassword(
+            @RequestBody String email
+    ){
+        userService.sendMailForgotPassword(email);
+        return CoreApiResponse.success("Check your mail");
+    }
+
+    @PutMapping("/setpassword")
+    public CoreApiResponse<?> setPassword(
+            @RequestParam("userId") Long userId,
+            @RequestParam("token") String token,
+            @RequestBody ForgotPasswordRequest request
+    ){
+        userService.setPassword(userId, token, request);
+        return CoreApiResponse.success("Successfully!");
     }
 
 }

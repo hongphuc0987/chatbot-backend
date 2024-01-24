@@ -16,7 +16,8 @@ spring:
 
 app:
   fe:
-    verify_url: ${VERIFY_URL:http://localhost:8088/api/v1/auth/verify}
+    verify_url: ${VERIFY_URL:http://localhost:8088/api/v1/user/verify}
+    forgot_password_url: ${FORGOT_PASSWORD_URL:http://localhost:8088/api/v1/user/setpassword}
   api:
     version:
       v1: /api/v1
@@ -43,7 +44,7 @@ openai:
   api:
     url: ${CHAT_GPT_URL:https://api.openai.com/v1/chat/completions }
   model: ${CHAT_GPT_MODEL:gpt-3.5-turbo}
-  key: ${CHAT_GPT_KEY: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}
+  key: ${CHAT_GPT_KEY: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}
 
 
 

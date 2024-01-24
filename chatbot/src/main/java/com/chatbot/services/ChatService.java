@@ -1,7 +1,9 @@
 package com.chatbot.services;
 
+import com.chatbot.components.security.UserPrincipal;
 import com.chatbot.models.Choice;
 import com.chatbot.models.ConversationEntity;
+import com.chatbot.models.UserEntity;
 import com.chatbot.repositories.MessageRepository;
 import com.chatbot.requests.MessageRequest;
 import com.chatbot.models.MessageEntity;
@@ -10,6 +12,8 @@ import com.chatbot.requests.ChatGptRequest;
 import com.chatbot.responses.ChatGptResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,6 +41,9 @@ public class ChatService implements IChatService{
 
     @Override
     public ChatGptResponse processChat(ChatGptRequest request, long conversationId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        UserEntity user = userPrincipal.getUser();
 
         List<MessageRequest> allMessages = new ArrayList<>();
 
@@ -44,7 +51,9 @@ public class ChatService implements IChatService{
         if(conversationId==0){
             conversation = new ConversationEntity();
             conversation.setIsActive(true);
+            conversation.setConversationName("New Conversation");
             conversation.setCreatedAt(LocalDateTime.now());
+            conversation.setUserId(user);
 
         }else{
             conversation = conversationRepository.findById(conversationId);

@@ -1,7 +1,10 @@
 package com.chatbot.services;
 import com.chatbot.components.events.MailEvent;
+import com.chatbot.components.exceptions.DataNotFoundException;
+import com.chatbot.models.TokenEntity;
 import com.chatbot.repositories.TokenRepository;
 import com.chatbot.requests.SignInRequest;
+import com.chatbot.requests.ForgotPasswordRequest;
 import com.chatbot.requests.SignUpRequest;
 import com.chatbot.responses.SignInResponse;
 import com.chatbot.components.security.TokenProvider;
@@ -23,6 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -42,6 +46,8 @@ public class UserService implements IUserService{
     @Value("${app.fe.verify_url}")
     private String verifyUrl;
 
+    @Value("${app.fe.forgot_password_url}")
+    private String forgotPasswordUrl;
     @Override
     public void signUp(SignUpRequest request) {
         Optional<UserEntity> userOptional = userRepository.findByEmail(request.getEmail());
@@ -111,6 +117,56 @@ public class UserService implements IUserService{
                 .userId(userPrincipal.getId())
                 .fullName(userPrincipal.getUsername())
                 .build();
+    }
+
+    @Override
+    public String refresh(String token) {
+        TokenEntity refreshToken = tokenRepository.findByName(token)
+                .orElseThrow(() ->
+                        new AppException(HttpStatus.BAD_REQUEST,"Refresh Token not found with token : " + token)
+                );
+        if(refreshToken.isRevoked()){
+            throw new AppException(HttpStatus.BAD_REQUEST,"Token đã bị thu hồi");
+        }
+        if(refreshToken.isExpired()){
+            throw new AppException(HttpStatus.BAD_REQUEST,"Token đã hết hạn");
+        }
+        if(refreshToken.getExpirationDate().isBefore(LocalDate.now())){
+            refreshToken.setExpired(true);
+            throw new AppException(HttpStatus.BAD_REQUEST,"Token đã hết hạn");
+        }
+
+        String accessToken = tokenProvider.createAccessToken(refreshToken.getUser().getId());
+
+        return accessToken;
+    }
+
+    @Override
+    public void sendMailForgotPassword(String email){
+        UserEntity user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new DataNotFoundException("User", "Email", email));
+
+        String token = tokenProvider.createToken(user.getId(), 600000); //10 minutes    `
+        String urlPattern = forgotPasswordUrl + "?userId={0}&token={1}";
+        String url = MessageFormat.format(urlPattern, user.getId(), token);
+        applicationEventPublisher.publishEvent(new MailEvent(this, user, url, "forgot"));
+    }
+
+    @Override
+    public void setPassword(Long userId, String token, ForgotPasswordRequest request) {
+        tokenProvider.validateToken(token);
+        UserEntity user = userRepository
+                .findById(userId)
+                .orElseThrow(()
+                        -> new DataNotFoundException("User", "id", userId));
+        if(request.getPassword().equals(request.getConfirmedPassword())){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        else{
+            throw new AppException(HttpStatus.BAD_REQUEST, "Confirmed password is wrong");
+        }
+        userRepository.save(user);
     }
 
 }

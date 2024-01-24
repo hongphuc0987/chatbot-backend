@@ -54,4 +54,14 @@ public class ThymeleafService implements IThymeleafService{
 
         return templateEngine.process(Template.VERIFY_MAIL, context);
     }
+
+    @Override
+    public String getResetPasswordContent(UserEntity user, String url) {
+        final Context context = new Context();
+
+        context.setVariable("firstName", user.getFullName());
+        context.setVariable("url", url);
+
+        return templateEngine.process(Template.RESET_PASSWORD_MAIL, context);
+    }
 }

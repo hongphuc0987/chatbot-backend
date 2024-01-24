@@ -67,6 +67,17 @@ public class TokenProvider {
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
                 .compact();
     }
+    public String createAccessToken(Long userId) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getAccessTokenExpirationMsec());
+
+        return Jwts.builder()
+                .setSubject(Long.toString(userId))
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                .compact();
+    }
 
     public String createToken(Long userId,int expiryTime) {
         Date now = new Date();
