@@ -1,0 +1,46 @@
+server:
+  port: ${SERVER_PORT:8088}
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/chatbot?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+app:
+  fe:
+    verify_url: ${VERIFY_URL:http://localhost:8088/api/v1/auth/verify}
+  api:
+    version:
+      v1: /api/v1
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL:phuctthse173231@fpt.edu.vn}
+    password: ${EMAIL_PASSWORD:mkpz iukh jvvc dglq}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  auth:
+    tokenSecret: T04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+    refreshTokenExpirationMsec: 864000000  # 10 days
+    accessTokenExpirationMsec: 900000 # 15 minutes
+  cors:
+    allowedOrigins: http://localhost:3000,http://localhost:3001,http://localhost:${SERVER_PORT:8088}
+openai:
+  api:
+    url: https://api.openai.com/v1/chat/completions
+  model: gpt-3.5-turbo
+  key: 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
