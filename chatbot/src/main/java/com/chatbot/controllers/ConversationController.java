@@ -21,11 +21,20 @@ public class ConversationController {
         ConversationEntity conversation = conversationService.renameConversation(id,name);
         return CoreApiResponse.success(conversation);
     }
-    @GetMapping("")
+    @GetMapping("/all")
     public CoreApiResponse<List<ConversationEntity>>getAllConversation() {
         List<ConversationEntity> conversations= conversationService.getAllConversation();
         return CoreApiResponse.success(conversations);
     }
+
+
+    @GetMapping("/{id}")
+    public CoreApiResponse<ConversationEntity>getConversation(@PathVariable Long id ) {
+        ConversationEntity conversation = conversationService.getConversationById(id);
+        return CoreApiResponse.success(conversation);
+    }
+
+
 
     @DeleteMapping("/{id}")
     public CoreApiResponse<?> deleteConversation(@PathVariable Long id){

@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
-      MYSQL_USER: phuctth
+      MYSQL_USER: root
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: chatbot
     depends_on:
@@ -21,7 +21,6 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: chatbot
       MYSQL_USER: phuctth

@@ -9,5 +9,7 @@ public interface IConversationService {
 
     ConversationEntity deleteConversation(Long id);
 
+    ConversationEntity getConversationById(Long id);
+
     List<ConversationEntity> getAllConversation();
 }

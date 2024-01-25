@@ -4,8 +4,10 @@ import com.chatbot.components.exceptions.DataNotFoundException;
 import com.chatbot.models.ConversationEntity;
 import com.chatbot.repositories.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.chatbot.components.exceptions.AppException;
 
 import java.util.*;
 @Service
@@ -35,5 +37,10 @@ public class ConversationService implements IConversationService{
         conversation.setIsActive(false);
         conversationRepository.save(conversation);
         return null;
+    }
+
+    @Override
+    public ConversationEntity getConversationById(Long id) {
+        return conversationRepository.findById(id).orElseThrow(() -> new AppException(HttpStatus.BAD_REQUEST, "Cannot find conversation with id: " + id));
     }
 }
