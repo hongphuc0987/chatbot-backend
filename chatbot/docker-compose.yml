@@ -1,0 +1,33 @@
+version: '3'
+services:
+  chatbot-backend:
+    image: phuctth/backend-chatbot:latest
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_USER: phuctth
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: chatbot
+    depends_on:
+      - db
+
+
+  db:
+    image: mysql:latest
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: chatbot
+      MYSQL_USER: phuctth
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+      
+volumes:
+  mysql-data:
