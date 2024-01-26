@@ -44,7 +44,7 @@ openai:
   api:
     url: ${CHAT_GPT_URL:https://api.openai.com/v1/chat/completions }
   model: ${CHAT_GPT_MODEL:gpt-3.5-turbo}
-  key: ${{ sercet.OPEN_AI_KEY }}
+  key: ${{ secrets.OPEN_AI_KEY }}
 
 
 
