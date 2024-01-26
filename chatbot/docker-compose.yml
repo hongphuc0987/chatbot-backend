@@ -10,7 +10,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: chatbot
-      API_KEY: ${{sercets.OPEN_AI_KEY}}
+      API_KEY: ${{ sercets.OPEN_AI_KEY }}
     depends_on:
       - db
 
