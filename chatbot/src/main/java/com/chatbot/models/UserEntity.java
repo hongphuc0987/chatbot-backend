@@ -30,9 +30,6 @@ public class UserEntity {
     private String password;
 
     @Column(nullable = false)
-    private String fullName;
-
-    @Column(nullable = false)
     private Boolean emailVerified = false;
 
     private Boolean isActive;

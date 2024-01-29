@@ -62,7 +62,6 @@ public class UserService implements IUserService{
             }
         }
         UserEntity user = new UserEntity();
-        user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmailVerified(false);

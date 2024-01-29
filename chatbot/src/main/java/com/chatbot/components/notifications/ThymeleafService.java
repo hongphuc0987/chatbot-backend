@@ -49,7 +49,7 @@ public class ThymeleafService implements IThymeleafService{
     public String getVerifyContent(UserEntity user, String url) {
         final Context context = new Context();
 
-        context.setVariable("firstName", user.getFullName());
+        context.setVariable("firstName", user.getEmail());
         context.setVariable("url", url);
 
         return templateEngine.process(Template.VERIFY_MAIL, context);
@@ -59,7 +59,7 @@ public class ThymeleafService implements IThymeleafService{
     public String getResetPasswordContent(UserEntity user, String url) {
         final Context context = new Context();
 
-        context.setVariable("firstName", user.getFullName());
+        context.setVariable("firstName", user.getEmail());
         context.setVariable("url", url);
 
         return templateEngine.process(Template.RESET_PASSWORD_MAIL, context);

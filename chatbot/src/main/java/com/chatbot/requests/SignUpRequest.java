@@ -15,8 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @FieldMatch(first = "confirmPassword", second = "password", message = "Mật khẩu lần 2 không trùng khớp")
 public class SignUpRequest {
-    @NotEmpty(message = "Full Name is required")
-    private String fullName;
 
     @NotEmpty(message = "Email is required")
     @Email(message = "Invalid email format")
