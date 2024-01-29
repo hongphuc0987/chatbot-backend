@@ -12,4 +12,7 @@ public interface IConversationService {
     ConversationEntity getConversationById(Long id);
 
     List<ConversationEntity> getAllConversation();
+
+    List<ConversationEntity> getConversationByUser();
+
 }

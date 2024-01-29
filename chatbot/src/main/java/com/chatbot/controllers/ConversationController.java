@@ -41,5 +41,11 @@ public class ConversationController {
         ConversationEntity conversation = conversationService.deleteConversation(id);
         return CoreApiResponse.success("Delete coversation successfully");
     }
+    @GetMapping("/user")
+    public CoreApiResponse<List<ConversationEntity>>getConversationByUser() {
+        List<ConversationEntity> conversations = conversationService.getConversationByUser();
+        return CoreApiResponse.success(conversations);
+    }
+
 
 }
