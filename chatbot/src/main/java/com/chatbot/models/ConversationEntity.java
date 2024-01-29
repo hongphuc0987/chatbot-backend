@@ -34,6 +34,5 @@ public class ConversationEntity {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "conversationId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<MessageEntity> messages;
 }
