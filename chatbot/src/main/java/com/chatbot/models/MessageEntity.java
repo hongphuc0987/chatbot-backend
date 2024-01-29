@@ -21,6 +21,7 @@ public class MessageEntity {
 
     @ManyToOne
     @JoinColumn(name = "conversation_id")
+    @JsonBackReference
     private ConversationEntity conversationId;
 
     private String role;
