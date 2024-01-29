@@ -14,6 +14,8 @@ import java.util.List;
 public class ChatGptResponse {
     private String id;
 
+    private Long conversationId;
+
     private String object;
 
     private long created;

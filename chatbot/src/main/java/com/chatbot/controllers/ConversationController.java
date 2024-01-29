@@ -5,6 +5,7 @@ import com.chatbot.components.apis.CoreApiResponse;
 import com.chatbot.services.IConversationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${app.api.version.v1}/conversation")
+@PreAuthorize("isAuthenticated()")
 public class ConversationController {
     @Autowired
     private IConversationService conversationService;

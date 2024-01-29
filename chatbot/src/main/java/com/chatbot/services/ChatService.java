@@ -100,10 +100,9 @@ public class ChatService implements IChatService{
         messageRepository.saveAll(messages);
 
         conversation.setMessages(messages);
+        chatGptResponse.setConversationId(conversation.getId());
 
         return chatGptResponse;
-
-
     }
     private String findLatestUserQuestion(ChatGptRequest request) {
         List<MessageRequest> messages = request.getMessages();
