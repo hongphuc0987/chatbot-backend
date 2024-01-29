@@ -39,7 +39,7 @@ app:
     refreshTokenExpirationMsec: 864000000  # 10 days
     accessTokenExpirationMsec: 1800000 # 15 minutes
   cors:
-    allowedOrigins: http://localhost:4176,http://localhost:4200,http://localhost:4201,http://localhost:${SERVER_PORT:8088}
+    allowedOrigins: http://localhost:4176,http://localhost:4200,http://localhost:4201,http://localhost:${SERVER_PORT:8088},chatgpt.techx.id.vn 
 openai:
   api:
     url: ${CHAT_GPT_URL:https://api.openai.com/v1/chat/completions }
